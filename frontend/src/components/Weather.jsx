@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API } from '../config';
 import {
   WiDaySunny,
   WiDayCloudy,
@@ -48,7 +49,10 @@ export default function Weather() {
       setLoading(true);
       try {
         const { lat, lon } = coords;
-        const res = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
+
+        const res = await fetch(
+          `${API}/weather?lat=${lat}&lon=${lon}`
+        );
         if (!res.ok) throw new Error(res.statusText);
         const data = await res.json();
         setWeather(data);

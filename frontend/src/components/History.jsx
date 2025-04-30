@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { API } from '../config';
 
 export default function History({ refreshFlag }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const baseUrl = '/api/items';
 
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await fetch(baseUrl);
+      const res = await fetch(`${API}/items`);
       const data = await res.json();
       setItems(data);
     } catch (err) {
@@ -21,7 +21,7 @@ export default function History({ refreshFlag }) {
   const handleDelete = async id => {
     if (!window.confirm('Delete this item?')) return;
     try {
-      await fetch(`${baseUrl}/${id}`, { method: 'DELETE' });
+      await fetch(`${API}/items/${id}`, { method: 'DELETE' });
       setItems(prev => prev.filter(item => item.id !== id));
     } catch (err) {
       console.error('Failed to delete item', err);

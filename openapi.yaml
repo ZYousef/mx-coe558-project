@@ -7,8 +7,28 @@ info:
 schemes:
   - https
 
+# Reusable CORS preflight response
+responses:
+  CorsResponse:
+    description: CORS support
+    headers:
+      Access-Control-Allow-Origin:
+        type: string
+        example: '*'
+      Access-Control-Allow-Methods:
+        type: string
+        example: 'GET, POST, DELETE, OPTIONS'
+      Access-Control-Allow-Headers:
+        type: string
+        example: 'Content-Type, Authorization'
+
 paths:
   /weather:
+    options:
+      summary: CORS preflight
+      responses:
+        "204":
+          $ref: '#/responses/CorsResponse'
     get:
       summary: Current weather
       operationId: getWeather
@@ -30,6 +50,11 @@ paths:
             type: object
 
   /generate:
+    options:
+      summary: CORS preflight
+      responses:
+        "204":
+          $ref: '#/responses/CorsResponse'
     post:
       summary: Generate an image
       operationId: genImage
@@ -55,6 +80,11 @@ paths:
             type: object
 
   /items:
+    options:
+      summary: CORS preflight
+      responses:
+        "204":
+          $ref: '#/responses/CorsResponse'
     get:
       summary: List saved items
       operationId: listItems

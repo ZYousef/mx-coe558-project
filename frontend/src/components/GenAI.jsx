@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API } from '../config';
 
 export default function GenAI({ onSave }) {
   const [prompt, setPrompt] = useState('');
@@ -6,9 +7,8 @@ export default function GenAI({ onSave }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
-
-  const GENAI_ENDPOINT = '/api/generate';
-  const CRUD_ENDPOINT = '/api/items';
+  const GENAI_ENDPOINT = `${API}/generate`;
+  const CRUD_ENDPOINT  = `${API}/items`;
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -22,7 +22,6 @@ export default function GenAI({ onSave }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
-      if (!res.ok) throw new Error(`Error ${res.status}`);
       const { result: url } = await res.json();
       setResult(url);
     } catch (err) {
