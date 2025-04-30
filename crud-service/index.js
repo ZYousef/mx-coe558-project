@@ -1,13 +1,18 @@
 // index.js
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');       
 const { Firestore } = require('@google-cloud/firestore');
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 const db = new Firestore();
 const collection = db.collection('genaiHistory');
+
+app.get('/healthz', (req, res) => res.send('OK'));
+
 
 // Create
 app.post('/items', async (req, res) => {
@@ -45,8 +50,6 @@ app.delete('/items/:id', async (req, res) => {
   res.sendStatus(204);
 });
 
-// Health check (optional)
-app.get('/healthz', (req, res) => res.send('OK'));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`CRUD service listening on ${PORT}`));
