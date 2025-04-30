@@ -22,7 +22,7 @@ yarn-error.log*
 
 # Docker
 docker-compose.override.yml
-**/Dockerfile
+
 
 # Build output
 dist/
