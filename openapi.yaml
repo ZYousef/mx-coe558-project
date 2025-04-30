@@ -7,33 +7,13 @@ info:
 schemes:
   - https
 
-# Reusable CORS preflight response
-responses:
-  CorsResponse:
-    description: CORS support
-    headers:
-      Access-Control-Allow-Origin:
-        type: string
-        example: '*'
-      Access-Control-Allow-Methods:
-        type: string
-        example: 'GET, POST, DELETE, OPTIONS'
-      Access-Control-Allow-Headers:
-        type: string
-        example: 'Content-Type, Authorization'
-
 paths:
   /weather:
-    options:
-      summary: CORS preflight
-      responses:
-        "204":
-          $ref: '#/responses/CorsResponse'
     get:
       summary: Current weather
       operationId: getWeather
       x-google-backend:
-        address: https://me-west1-458416.cloudfunctions.net/weather
+        address: https://me-west1-coe558-project-458416.cloudfunctions.net/weather
       parameters:
         - name: lat
           in: query
@@ -50,16 +30,11 @@ paths:
             type: object
 
   /generate:
-    options:
-      summary: CORS preflight
-      responses:
-        "204":
-          $ref: '#/responses/CorsResponse'
     post:
       summary: Generate an image
       operationId: genImage
       x-google-backend:
-        address: https://me-west1-458416.cloudfunctions.net/generate
+        address: https://me-west1-coe558-project-458416.cloudfunctions.net/generate
       consumes:
         - application/json
       produces:
@@ -80,16 +55,11 @@ paths:
             type: object
 
   /items:
-    options:
-      summary: CORS preflight
-      responses:
-        "204":
-          $ref: '#/responses/CorsResponse'
     get:
       summary: List saved items
       operationId: listItems
       x-google-backend:
-        address: https://crud-service-217890144082.run.app/items
+        address: https://crud-service-217890144082.me-west1.run.app/items
       responses:
         "200":
           description: OK
@@ -99,10 +69,37 @@ paths:
       summary: Save an item
       operationId: saveItem
       x-google-backend:
-        address: https://crud-service-217890144082.run.app/items
+        address: https://crud-service-217890144082.me-west1.run.app/items
       consumes:
         - application/json
       parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              prompt:
+                type: string
+              resultUrl:
+                type: string
+      responses:
+        "200":
+          description: OK
+
+  /items/{id}:
+    put:
+      summary: Update an item
+      operationId: updateItem
+      x-google-backend:
+        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
         - in: body
           name: body
           required: true
@@ -125,7 +122,7 @@ paths:
           required: true
           type: string
       x-google-backend:
-        address: https://crud-service-217890144082.run.app/items/{id}
+        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
       responses:
         "204":
           description: No Content
