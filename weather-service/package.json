@@ -1,0 +1,17 @@
+{
+  "name": "weather-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx functions-framework --signature-type=http --target=weather"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^4.0.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0"
+  }
+}

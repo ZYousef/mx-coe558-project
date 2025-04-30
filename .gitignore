@@ -1,0 +1,42 @@
+# Node.js dependencies
+node_modules/
+
+# Local environment files
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Mac system files
+.DS_Store
+
+# VSCode settings
+.vscode/
+
+# JetBrains IDEs
+.idea/
+
+# Docker
+docker-compose.override.yml
+**/Dockerfile
+
+# Build output
+dist/
+build/
+
+# Functions Framework cache
+.gcloud/
+
+# Cloud Run image directories
+.genai-service/
+.weather-service/
+
+# Coverage reports
+coverage/
+
+# npm package lock (if you prefer yarn)
+# package-lock.json
