@@ -40,3 +40,69 @@ coverage/
 
 # npm package lock (if you prefer yarn)
 # package-lock.json
+*.svg
+
+
+# Frontend dependencies & build
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+/frontend/build/
+
+# Vite cache
+/.vite/
+
+# Optional: local env overrides
+/frontend/.env.local
+
+# dependencies
+/node_modules/
+
+# build outputs
+/dist/
+/build/
+/out/
+/.astro/
+/.next/
+/public/build/
+
+# local env files
+/.env
+/.env.*.local
+!.env.example
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE & tooling cache
+/.cache/
+/.parcel-cache/
+/.vite/
+/.svelte-kit/
+
+# testing
+/coverage/
+/nyc_output/
+
+# lockfiles (if using Yarn or pnpm)
+/package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
+
+# miscellaneous
+*.local
