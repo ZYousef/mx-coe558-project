@@ -1,0 +1,101 @@
+swagger: "2.0"
+info:
+  title: coe558-unified-api
+  description: Single API front for Weather, GenAI & CRUD
+  version: 1.0.0
+
+schemes:
+  - https
+
+paths:
+  /weather:
+    get:
+      summary: Current weather
+      operationId: getWeather
+      x-google-backend:
+        address: https://me-west1-458416.cloudfunctions.net/weather
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          type: number
+        - name: lon
+          in: query
+          required: true
+          type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+
+  /generate:
+    post:
+      summary: Generate an image
+      operationId: genImage
+      x-google-backend:
+        address: https://me-west1-458416.cloudfunctions.net/generate
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              prompt:
+                type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+
+  /items:
+    get:
+      summary: List saved items
+      operationId: listItems
+      x-google-backend:
+        address: https://crud-service-217890144082.run.app/items
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+    post:
+      summary: Save an item
+      operationId: saveItem
+      x-google-backend:
+        address: https://crud-service-217890144082.run.app/items
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              prompt:
+                type: string
+              resultUrl:
+                type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete an item
+      operationId: deleteItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      x-google-backend:
+        address: https://crud-service-217890144082.run.app/items/{id}
+      responses:
+        "204":
+          description: No Content
