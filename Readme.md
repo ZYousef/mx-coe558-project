@@ -45,15 +45,150 @@ POST /generate HTTP/1.1
 Host: me-west1-coe558-project-458416.cloudfunctions.net
 Content-Type: application/json
 
-{
-  "prompt": "an astronaut riding a horse"
-}
+{ "prompt": "an astronaut riding a horse" }
 ```
 
 ### Sample Response
 ```json
+{ "result": "https://generated-image-url.example.com/abcd1234.png" }
+```
+
+---
+
+## CRUD Service
+
+**Base URL**
+```
+https://crud-service-217890144082.me-west1.run.app
+```
+
+### Health Check
+
+**Endpoint**
+```
+GET /healthz
+```
+**Request (Postman)**
+```
+GET /healthz HTTP/1.1
+Host: crud-service-217890144082.me-west1.run.app
+Accept: text/plain
+```
+**Sample Response**
+```
+OK
+```
+
+---
+
+### Create Item
+
+**Endpoint**
+```
+POST /items
+```
+**Request (Postman)**
+```
+POST /items HTTP/1.1
+Host: crud-service-217890144082.me-west1.run.app
+Content-Type: application/json
+
 {
-  "result": "https://generated-image-url.example.com/abcd1234.png"
+  "prompt": "a cat in a hat",
+  "resultUrl": "https://img.example.com/cat.png"
 }
+```
+**Sample Response (201 Created)**
+```json
+{ "id": "AbC123XyZ" }
+```
+
+---
+
+### List Items
+
+**Endpoint**
+```
+GET /items
+```
+**Request (Postman)**
+```
+GET /items HTTP/1.1
+Host: crud-service-217890144082.me-west1.run.app
+Accept: application/json
+```
+**Sample Response**
+```json
+[
+  {
+    "id": "AbC123XyZ",
+    "prompt": "a cat in a hat",
+    "resultUrl": "https://img.example.com/cat.png",
+    "timestamp": 1714412345678
+  }
+]
+```
+
+---
+
+### Get Item
+
+**Endpoint**
+```
+GET /items/:id
+```
+**Request (Postman)**
+```
+GET /items/AbC123XyZ HTTP/1.1
+Host: crud-service-217890144082.me-west1.run.app
+Accept: application/json
+```
+**Sample Response**
+```json
+{
+  "id": "AbC123XyZ",
+  "prompt": "a cat in a hat",
+  "resultUrl": "https://img.example.com/cat.png",
+  "timestamp": 1714412345678
+}
+```
+
+---
+
+### Update Item
+
+**Endpoint**
+```
+PUT /items/:id
+```
+**Request (Postman)**
+```
+PUT /items/AbC123XyZ HTTP/1.1
+Host: crud-service-217890144082.me-west1.run.app
+Content-Type: application/json
+
+{ "prompt": "an updated prompt" }
+```
+**Sample Response (204 No Content)**
+```
+(no body)
+```
+
+---
+
+### Delete Item
+
+**Endpoint**
+```
+DELETE /items/:id
+```
+**Request (Postman)**
+```
+DELETE /items/AbC123XyZ HTTP/1.1
+Host: crud-service-217890144082.me-west1.run.app
+```
+**Sample Response (204 No Content)**
+```
+(no body)
 ```
 
