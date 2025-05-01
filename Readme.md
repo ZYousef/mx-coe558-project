@@ -1,6 +1,13 @@
 # COE558 Cloud Functions Endpoints
 
-Currently implemented:
+## Terraform
+```
+export TF_VAR_genai_api_key=sk-YOUROPENAPI_KEY
+
+cd terraform
+terraform init
+terraform apply
+```
 
 ---
 

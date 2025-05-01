@@ -6,12 +6,12 @@ info:
 
 # Enable CORS globally workaround https://stackoverflow.com/a/67678657
 
-host: coe558-api-2wjxrypq7k272.apigateway.coe558-project-458416.cloud.goog
+host: ${service_control}"
 schemes:
   - https
 
 x-google-endpoints:
-  - name: coe558-api-2wjxrypq7k272.apigateway.coe558-project-458416.cloud.goog
+  - name: "${service_control}"
     allowCors: true
 
 paths:
