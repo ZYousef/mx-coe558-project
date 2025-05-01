@@ -1,6 +1,12 @@
 # COE558 Cloud Functions Endpoints
 
 ## Terraform
+1. clone this repo to cloud shell
+2. gcloud services enable cloudresourcemanager.googleapis.com --project=PROJECT_NAME
+
+100. enable apis, API Gateway API
+
+3. initiate and apply terraform
 ```
 export TF_VAR_genai_api_key=sk-YOUROPENAPI_KEY
 

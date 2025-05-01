@@ -4,14 +4,12 @@ info:
   description: Single API front for Weather, GenAI & CRUD
   version: 1.0.0
 
-# Enable CORS globally workaround https://stackoverflow.com/a/67678657
-
-host: ${service_control}"
+host: ${service_control}
 schemes:
   - https
 
 x-google-endpoints:
-  - name: "${service_control}"
+  - name: ${service_control}
     allowCors: true
 
 paths:
@@ -34,7 +32,8 @@ paths:
           schema:
             type: object
       x-google-backend:
-        address: https://me-west1-coe558-project-458416.cloudfunctions.net/weather
+        address: ${weather_backend_url}
+        protocol: h2
 
   /generate:
     post:
@@ -59,7 +58,8 @@ paths:
           schema:
             type: object
       x-google-backend:
-        address: https://me-west1-coe558-project-458416.cloudfunctions.net/generate
+        address: ${genai_backend_url}
+        protocol: h2
 
   /items:
     get:
@@ -70,8 +70,11 @@ paths:
           description: OK
           schema:
             type: array
+            items:
+              type: object
       x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items
+        address: ${crud_backend_url}/items
+        protocol: h2
 
     post:
       summary: Save an item
@@ -92,8 +95,11 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: object
       x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items
+        address: ${crud_backend_url}/items
+        protocol: h2
 
   /items/{id}:
     parameters:
@@ -125,8 +131,11 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: object
       x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
+        address: ${crud_backend_url}/items/{id}
+        protocol: h2
 
     delete:
       summary: Delete an item
@@ -135,4 +144,5 @@ paths:
         "204":
           description: No Content
       x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
+        address: ${crud_backend_url}/items/{id}
+        protocol: h2
