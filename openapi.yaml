@@ -4,16 +4,21 @@ info:
   description: Single API front for Weather, GenAI & CRUD
   version: 1.0.0
 
+# Enable CORS globally workaround https://stackoverflow.com/a/67678657
+
+host: coe558-api-2wjxrypq7k272.apigateway.coe558-project-458416.cloud.goog
 schemes:
   - https
+
+x-google-endpoints:
+  - name: coe558-api-2wjxrypq7k272.apigateway.coe558-project-458416.cloud.goog
+    allowCors: true
 
 paths:
   /weather:
     get:
       summary: Current weather
       operationId: getWeather
-      x-google-backend:
-        address: https://me-west1-coe558-project-458416.cloudfunctions.net/weather
       parameters:
         - name: lat
           in: query
@@ -28,13 +33,13 @@ paths:
           description: OK
           schema:
             type: object
+      x-google-backend:
+        address: https://me-west1-coe558-project-458416.cloudfunctions.net/weather
 
   /generate:
     post:
       summary: Generate an image
       operationId: genImage
-      x-google-backend:
-        address: https://me-west1-coe558-project-458416.cloudfunctions.net/generate
       consumes:
         - application/json
       produces:
@@ -53,23 +58,24 @@ paths:
           description: OK
           schema:
             type: object
+      x-google-backend:
+        address: https://me-west1-coe558-project-458416.cloudfunctions.net/generate
 
   /items:
     get:
       summary: List saved items
       operationId: listItems
-      x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items
       responses:
         "200":
           description: OK
           schema:
             type: array
+      x-google-backend:
+        address: https://crud-service-217890144082.me-west1.run.app/items
+
     post:
       summary: Save an item
       operationId: saveItem
-      x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items
       consumes:
         - application/json
       parameters:
@@ -86,13 +92,19 @@ paths:
       responses:
         "200":
           description: OK
+      x-google-backend:
+        address: https://crud-service-217890144082.me-west1.run.app/items
 
   /items/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+
     put:
       summary: Update an item
       operationId: updateItem
-      x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
       consumes:
         - application/json
       parameters:
@@ -113,16 +125,14 @@ paths:
       responses:
         "200":
           description: OK
+      x-google-backend:
+        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
+
     delete:
       summary: Delete an item
       operationId: deleteItem
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-      x-google-backend:
-        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
       responses:
         "204":
           description: No Content
+      x-google-backend:
+        address: https://crud-service-217890144082.me-west1.run.app/items/{id}
