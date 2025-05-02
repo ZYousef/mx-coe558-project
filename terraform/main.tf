@@ -326,3 +326,50 @@ output "crud_url" {
 output "gateway_url" {
   value = "https://${google_api_gateway_gateway.gateway.default_hostname}"
 }
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Frontend: Static site hosting in GCS
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Build and deploy the React frontend
+resource "null_resource" "deploy_frontend" {
+  provisioner "local-exec" {
+    command = <<EOT
+cd ${path.module}/../frontend
+npm install
+npm run build
+gsutil -m rsync -r dist gs://${google_storage_bucket.frontend.name}
+EOT
+  }
+  triggers = {
+    always_run = timestamp()
+  }
+  depends_on = [
+    google_storage_bucket.frontend,
+    google_storage_bucket_iam_member.frontend_public
+  ]
+}
+
+# Storage bucket to host the frontend
+resource "google_storage_bucket" "frontend" {
+  name                        = "${var.project}-frontend"
+  location                    = var.region
+  uniform_bucket_level_access = true
+
+  website {
+    main_page_suffix = "index.html"
+    not_found_page   = "404.html"
+  }
+}
+
+# Make frontend bucket publicly readable
+resource "google_storage_bucket_iam_member" "frontend_public" {
+  bucket = google_storage_bucket.frontend.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
+}
+
+# Output the frontend URL
+output "frontend_url" {
+  value = "https://${google_storage_bucket.frontend.name}.storage.googleapis.com/index.html"
+}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { API } from '../config';
+import React, { useState, useEffect, useCallback } from 'react';
+import debounce from 'lodash/debounce';
 
 export default function History({ refreshFlag }) {
   const [items, setItems] = useState([]);
@@ -8,25 +8,44 @@ export default function History({ refreshFlag }) {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API}/items`);
+      const res = await fetch('/api/items', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       const data = await res.json();
       setItems(data);
     } catch (err) {
-      console.error('Failed to fetch history', err);
+      console.error('Failed to fetch history:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async id => {
-    if (!window.confirm('Delete this item?')) return;
-    try {
-      await fetch(`${API}/items/${id}`, { method: 'DELETE' });
-      setItems(prev => prev.filter(item => item.id !== id));
-    } catch (err) {
-      console.error('Failed to delete item', err);
-    }
-  };
+  const handleDelete = useCallback(
+    debounce(async (id) => {
+      if (!window.confirm('Delete this item?')) return;
+      try {
+        const res = await fetch(`/api/items/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        setItems((prev) => prev.filter((item) => item.id !== id));
+      } catch (err) {
+        console.error('Failed to delete item:', err);
+      }
+    }, 300),
+    []
+  );
 
   useEffect(() => {
     fetchItems();
@@ -49,7 +68,7 @@ export default function History({ refreshFlag }) {
             </tr>
           </thead>
           <tbody>
-            {items.map(item => (
+            {items.map((item) => (
               <tr key={item.id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">{item.prompt}</td>
                 <td className="px-4 py-2">{new Date(item.timestamp).toLocaleString()}</td>

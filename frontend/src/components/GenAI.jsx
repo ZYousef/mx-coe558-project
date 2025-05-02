@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { API } from '../config';
 
 export default function GenAI({ onSave }) {
   const [prompt, setPrompt] = useState('');
@@ -7,8 +6,6 @@ export default function GenAI({ onSave }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
-  const GENAI_ENDPOINT = `${API}/generate`;
-  const CRUD_ENDPOINT  = `${API}/items`;
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -17,15 +14,18 @@ export default function GenAI({ onSave }) {
     setResult(null);
     setSaved(false);
     try {
-      const res = await fetch(GENAI_ENDPOINT, {
+      const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       const { result: url } = await res.json();
       setResult(url);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to generate image:', err);
       setError('Failed to generate image.');
     } finally {
       setLoading(false);
@@ -35,15 +35,18 @@ export default function GenAI({ onSave }) {
   const handleSave = async () => {
     if (!result) return;
     try {
-      await fetch(CRUD_ENDPOINT, {
+      const res = await fetch('/api/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, resultUrl: result }),
       });
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       setSaved(true);
       onSave();
     } catch (err) {
-      console.error(err);
+      console.error('Failed to save:', err);
       setError('Failed to save.');
     }
   };
