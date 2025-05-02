@@ -119,6 +119,7 @@ resource "google_project_iam_member" "artifact_registry_reader" {
 locals {
   required_apis = [
     "run.googleapis.com",
+    "firestore.googleapis.com",
     "apigateway.googleapis.com",
     "servicemanagement.googleapis.com",
     "servicecontrol.googleapis.com",
@@ -137,6 +138,19 @@ resource "google_project_service" "enabled_apis" {
   disable_dependent_services = true
   disable_on_destroy         = true
   depends_on                 = [google_project_service.crm]
+}
+
+# Create Firestore database
+resource "google_firestore_database" "default" {
+  project     = var.project
+  name        = "(default)"
+  location_id = var.region
+  type        = "FIRESTORE_NATIVE"
+
+  # Ensure the Firestore API is enabled first
+  depends_on = [
+    google_project_service.enabled_apis["firestore.googleapis.com"]
+  ]
 }
 
 # Cloud Run: CRUD Service
