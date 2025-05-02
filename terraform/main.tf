@@ -71,6 +71,11 @@ data "template_file" "openapi" {
   }
 }
 
+# Lookup numeric project number via gcloud for IAM bindings
+data "external" "project_info" {
+  program = ["bash", "-c", "gcloud projects describe ${var.project} --format=json"]
+}
+
 # Enable required Google APIs
 resource "google_project_service" "crm" {
   service                    = "cloudresourcemanager.googleapis.com"
@@ -89,7 +94,8 @@ resource "null_resource" "build_crud_image" {
     always_run = timestamp()
   }
   depends_on = [
-    google_project_service.cloudbuild
+    google_project_service.crm,
+    google_project_service.enabled_apis["cloudbuild.googleapis.com"]
   ]
 }
 
@@ -100,16 +106,12 @@ resource "null_resource" "build_crud_image" {
 
 
 
-# Lookup current project number for service account binding
-data "google_project" "current" {
-  project_id = var.project
-}
 
 # Grant Cloud Functions service agent permission to read Artifact Registry
 resource "google_project_iam_member" "artifact_registry_reader" {
   project = var.project
   role    = "roles/artifactregistry.reader"
-  member  = "serviceAccount:service-${data.google_project.current.number}@gcf-admin-robot.iam.gserviceaccount.com"
+  member  = "serviceAccount:service-${data.external.project_info.result["projectNumber"]}@gcf-admin-robot.iam.gserviceaccount.com"
 }
 
 
@@ -142,7 +144,7 @@ resource "google_cloud_run_service" "crud" {
   name     = "crud-service"
   location = var.region
   depends_on = [
-    google_project_service.cloud_run,
+    google_project_service.enabled_apis["run.googleapis.com"],
     null_resource.build_crud_image
   ]
 
@@ -185,7 +187,10 @@ resource "google_storage_bucket" "function_source" {
   name     = "${var.project}-function-source"
   location = var.region
   project  = var.project
-  depends_on = [google_project_service.storage]
+  depends_on = [
+    google_project_service.crm,
+    google_project_service.enabled_apis["storage.googleapis.com"]
+  ]
 }
 
 resource "google_storage_bucket_object" "weather_source" {
@@ -214,7 +219,7 @@ resource "google_cloudfunctions_function" "weather" {
   trigger_http          = true
   available_memory_mb   = 256
   depends_on = [
-    google_project_service.cloudfunctions,
+    google_project_service.enabled_apis["cloudfunctions.googleapis.com"],
     google_storage_bucket_object.weather_source,
     google_project_iam_member.artifact_registry_reader
   ]
@@ -243,7 +248,7 @@ resource "google_cloudfunctions_function" "genai" {
     GENAI_API_KEY = var.genai_api_key
   }
   depends_on = [
-    google_project_service.cloudfunctions,
+    google_project_service.enabled_apis["cloudfunctions.googleapis.com"],
     google_storage_bucket_object.genai_source,
     google_project_iam_member.artifact_registry_reader
   ]
@@ -261,7 +266,12 @@ resource "google_cloudfunctions_function_iam_member" "genai_invoker" {
 resource "google_api_gateway_api" "gateway" {
   provider   = google-beta
   api_id     = "coe558-api"
-  depends_on = [google_project_service.api_gateway, google_project_service.servicemanagement, google_project_service.servicecontrol, google_project_service.endpoints]
+  depends_on = [
+    google_project_service.enabled_apis["apigateway.googleapis.com"],
+    google_project_service.enabled_apis["servicemanagement.googleapis.com"],
+    google_project_service.enabled_apis["servicecontrol.googleapis.com"],
+    google_project_service.enabled_apis["endpoints.googleapis.com"],
+  ]
   lifecycle {
     ignore_changes = [api_id]
   }
