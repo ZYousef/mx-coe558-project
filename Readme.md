@@ -1,7 +1,31 @@
 # COE558 Cloud Functions Endpoints
 
-Currently implemented:
+## Terraform
+### Cloud Build
+1. clone this repo to cloud shell
+2. gcloud services enable cloudresourcemanager.googleapis.com \
+  --project=PROJECT
+3. initiate and apply terraform
+```
+cd terraform
+terraform init
+terraform apply
 
+Enter OPEN_API KEY ( hidden input )
+Enter Project ID 
+```
+
+### Cloud Teardown
+```
+terraform destroy
+```
+if genapikey requested enter anyd data
+
+then afterwards delete left-out api 
+```
+gcloud api-gateway apis delete coe558-api   --project=PROJECT_ID
+gcloud services disable firestore.googleapis.com --project=PROJECT_ID
+```
 ---
 
 ## Weather Service

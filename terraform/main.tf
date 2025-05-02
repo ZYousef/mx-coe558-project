@@ -1,9 +1,16 @@
 terraform {
-  required_version = ">= 1.3.0"
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.0.0"
+      version = "~> 5.0"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "~> 5.0"
+    }
+    archive = {
+      source  = "hashicorp/archive"
+      version = ">= 2.2.0"
     }
   }
 }
@@ -13,15 +20,39 @@ provider "google" {
   region  = var.region
 }
 
-# Enable required GCP APIs
-resource "google_project_service" "enable_services" {
-  for_each = toset([
-    "cloudfunctions.googleapis.com",
-    "run.googleapis.com",
-    "apigateway.googleapis.com",
-    "iam.googleapis.com",
-  ])
-  service = each.key
+provider "google-beta" {
+  alias   = "beta"
+  project = var.project
+  region  = var.region
+}
+
+data "archive_file" "weather_zip" {
+  type       = "zip"
+  source_dir = "${path.module}/../weather-service"
+  output_path = "${path.module}/weather-service.zip"
+}
+
+data "archive_file" "genai_zip" {
+  type       = "zip"
+  source_dir = "${path.module}/../genai-service"
+  output_path = "${path.module}/genai-service.zip"
+}
+
+variable "region" {
+  description = "Region for all services"
+  type        = string
+  default     = "us-central1"
+}
+
+variable "genai_api_key" {
+  description = "API key for OpenAI in GenAI service"
+  type        = string
+  sensitive   = true
+
+  validation {
+    condition     = length(var.genai_api_key) > 0
+    error_message = "The genai_api_key must not be empty."
+  }
 }
 
 variable "project" {
@@ -29,152 +60,269 @@ variable "project" {
   type        = string
 }
 
-variable "region" {
-  description = "GCP region for Cloud Run and Functions"
-  type        = string
-  default     = "europe-west1"
-}
+data "template_file" "openapi" {
+  template = file("${path.module}/../openapi.yaml.tpl")
 
-################################################################
-# Cloud Functions (GenAI & Weather)
-################################################################
-
-resource "google_cloudfunctions_function" "weather" {
-  name        = "weather"
-  runtime     = "nodejs20"
-  entry_point = "weather"
-  region      = var.region
-  trigger_http            = true
-  available_memory_mb     = 128
-  source_directory        = "${path.module}/weather-service"
-  environment_variables = {
-    # any needed env vars
+  vars = {
+    service_control     = "${google_api_gateway_api.gateway.api_id}.endpoints.${var.project}.cloud.goog"
+    weather_backend_url = google_cloudfunctions_function.weather.https_trigger_url
+    genai_backend_url   = google_cloudfunctions_function.genai.https_trigger_url
+    crud_backend_url    = google_cloud_run_service.crud.status[0].url
   }
 }
 
-resource "google_cloudfunctions_function" "genai" {
-  name        = "generate"
-  runtime     = "nodejs20"
-  entry_point = "generate"
-  region      = var.region
-  trigger_http            = true
-  available_memory_mb     = 256
-  source_directory        = "${path.module}/genai-service"
-  environment_variables = {
-    # must provide your GenAI key as secret or env var
-    GENAI_API_KEY = var.genai_api_key
-  }
+# Lookup numeric project number via gcloud for IAM bindings
+data "external" "project_info" {
+  program = ["bash", "-c", "gcloud projects describe ${var.project} --format=json"]
 }
 
-variable "genai_api_key" {
-  description = "API key for OpenAI Image Generation"
-  type        = string
-  sensitive   = true
+# Enable required Google APIs
+resource "google_project_service" "crm" {
+  service                    = "cloudresourcemanager.googleapis.com"
+  disable_dependent_services = true
+  disable_on_destroy         = true
+  project                    = var.project
 }
 
-################################################################
-# Cloud Run (CRUD & Frontend)
-################################################################
 
-resource "google_cloud_run_service" "crud" {
-  name     = "crud-service"
-  location = var.region
-
-  template {
-    spec {
-      containers {
-        image = "gcr.io/${var.project}/crud-service"
-        ports {
-          container_port = 8080
-        }
-      }
-    }
+# Build and push CRUD container image
+resource "null_resource" "build_crud_image" {
+  provisioner "local-exec" {
+    command = "gcloud builds submit ${path.module}/../crud-service --tag gcr.io/${var.project}/crud-service:latest"
   }
-
-  traffics {
-    percent         = 100
-    latest_revision = true
+  triggers = {
+    always_run = timestamp()
   }
-}
-
-resource "google_cloud_run_service" "frontend" {
-  name     = "frontend"
-  location = var.region
-
-  template {
-    spec {
-      containers {
-        image = "gcr.io/${var.project}/frontend"
-        ports {
-          container_port = 8080
-        }
-      }
-    }
-  }
-
-  traffics {
-    percent         = 100
-    latest_revision = true
-  }
-}
-
-################################################################
-# API Gateway
-################################################################
-
-resource "google_api_gateway_api" "api" {
-  api_id = "coe558-api"
-}
-
-resource "google_api_gateway_api_config" "cfg" {
-  api       = google_api_gateway_api.api.name
-  config_id = "v1"
-
-  openapi_documents {
-    path     = "${path.module}/openapi.yaml"
-    # no need to set contents; file is read from local
-  }
-
   depends_on = [
-    google_project_service.enable_services,
-    google_cloudfunctions_function.weather,
-    google_cloudfunctions_function.genai,
-    google_cloud_run_service.crud
+    google_project_service.crm,
+    google_project_service.enabled_apis["cloudbuild.googleapis.com"]
   ]
 }
 
-resource "google_api_gateway_gateway" "gateway" {
-  gateway_id = "coe558-gateway"
-  api        = google_api_gateway_api.api.name
-  api_config = google_api_gateway_api_config.cfg.id
-  location   = var.region
+
+
+
+
+
+
+
+
+# Grant Cloud Functions service agent permission to read Artifact Registry
+resource "google_project_iam_member" "artifact_registry_reader" {
+  project = var.project
+  role    = "roles/artifactregistry.reader"
+  member  = "serviceAccount:service-${data.external.project_info.result["projectNumber"]}@gcf-admin-robot.iam.gserviceaccount.com"
 }
 
-################################################################
-# Outputs
-################################################################
 
+# Enable required APIs in bulk
+locals {
+  required_apis = [
+    "run.googleapis.com",
+    "firestore.googleapis.com",
+    "apigateway.googleapis.com",
+    "servicemanagement.googleapis.com",
+    "servicecontrol.googleapis.com",
+    "endpoints.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "storage.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "artifactregistry.googleapis.com",
+  ]
+}
+
+resource "google_project_service" "enabled_apis" {
+  for_each = toset(local.required_apis)
+  service                    = each.key
+  project                    = var.project
+  disable_dependent_services = true
+  disable_on_destroy         = true
+  depends_on                 = [google_project_service.crm]
+}
+
+# Cloud Run: CRUD Service
+resource "google_cloud_run_service" "crud" {
+  name     = "crud-service"
+  location = var.region
+  depends_on = [
+    google_project_service.enabled_apis["run.googleapis.com"],
+    null_resource.build_crud_image
+  ]
+
+  template {
+    spec {
+      containers {
+        image = "gcr.io/${var.project}/crud-service:latest"
+        env {
+          name  = "GOOGLE_CLOUD_PROJECT"
+          value = var.project
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+
+  lifecycle {
+    ignore_changes = [template[0].spec[0].containers[0].image]
+  }
+
+  timeouts {
+    create = "10m"
+    update = "10m"
+  }
+}
+
+resource "google_cloud_run_service_iam_member" "crud_invoker" {
+  service  = google_cloud_run_service.crud.name
+  location = google_cloud_run_service.crud.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+# Storage for Cloud Functions source
+resource "google_storage_bucket" "function_source" {
+  name     = "${var.project}-function-source"
+  location = var.region
+  project  = var.project
+  depends_on = [
+    google_project_service.crm,
+    google_project_service.enabled_apis["storage.googleapis.com"]
+  ]
+}
+
+resource "google_storage_bucket_object" "weather_source" {
+  name           = "weather-service.zip"
+  bucket         = google_storage_bucket.function_source.name
+  source         = data.archive_file.weather_zip.output_path
+  content_type   = "application/zip"
+}
+
+resource "google_storage_bucket_object" "genai_source" {
+  name           = "genai-service.zip"
+  bucket         = google_storage_bucket.function_source.name
+  source         = data.archive_file.genai_zip.output_path
+  content_type   = "application/zip"
+}
+
+# Cloud Functions: Weather
+resource "google_cloudfunctions_function" "weather" {
+  name                  = "weather"
+  project               = var.project
+  region                = var.region
+  runtime               = "nodejs18"
+  entry_point           = "weather"
+  source_archive_bucket = google_storage_bucket.function_source.name
+  source_archive_object = google_storage_bucket_object.weather_source.name
+  trigger_http          = true
+  available_memory_mb   = 256
+  depends_on = [
+    google_project_service.enabled_apis["cloudfunctions.googleapis.com"],
+    google_storage_bucket_object.weather_source,
+    google_project_iam_member.artifact_registry_reader
+  ]
+}
+
+resource "google_cloudfunctions_function_iam_member" "weather_invoker" {
+  project        = var.project
+  region         = var.region
+  cloud_function = google_cloudfunctions_function.weather.name
+  role           = "roles/cloudfunctions.invoker"
+  member         = "allUsers"
+}
+
+# Cloud Functions: GenAI
+resource "google_cloudfunctions_function" "genai" {
+  name                  = "genai"
+  project               = var.project
+  region                = var.region
+  runtime               = "nodejs18"
+  entry_point           = "generate"
+  source_archive_bucket = google_storage_bucket.function_source.name
+  source_archive_object = google_storage_bucket_object.genai_source.name
+  trigger_http          = true
+  available_memory_mb   = 256
+  environment_variables = {
+    GENAI_API_KEY = var.genai_api_key
+  }
+  depends_on = [
+    google_project_service.enabled_apis["cloudfunctions.googleapis.com"],
+    google_storage_bucket_object.genai_source,
+    google_project_iam_member.artifact_registry_reader
+  ]
+}
+
+resource "google_cloudfunctions_function_iam_member" "genai_invoker" {
+  project        = var.project
+  region         = var.region
+  cloud_function = google_cloudfunctions_function.genai.name
+  role           = "roles/cloudfunctions.invoker"
+  member         = "allUsers"
+}
+
+# API Gateway Definition
+resource "google_api_gateway_api" "gateway" {
+  provider   = google-beta
+  api_id     = "coe558-api"
+  depends_on = [
+    google_project_service.enabled_apis["apigateway.googleapis.com"],
+    google_project_service.enabled_apis["servicemanagement.googleapis.com"],
+    google_project_service.enabled_apis["servicecontrol.googleapis.com"],
+    google_project_service.enabled_apis["endpoints.googleapis.com"],
+  ]
+  lifecycle {
+    ignore_changes = [api_id]
+  }
+}
+
+resource "google_api_gateway_api_config" "gateway_cfg" {
+  provider      = google-beta
+  api           = google_api_gateway_api.gateway.api_id
+  api_config_id = "coe558-config"
+  depends_on    = [
+    google_api_gateway_api.gateway,
+    google_cloud_run_service.crud,
+    google_cloudfunctions_function.weather,
+    google_cloudfunctions_function.genai,
+    data.template_file.openapi
+  ]
+
+  openapi_documents {
+    document {
+      path     = "openapi.yaml"
+      contents = base64encode(data.template_file.openapi.rendered)
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "google_api_gateway_gateway" "gateway" {
+  provider   = google-beta
+  gateway_id = "coe558-gateway"
+  api_config = google_api_gateway_api_config.gateway_cfg.id
+  region     = var.region
+  depends_on = [google_api_gateway_api_config.gateway_cfg]
+}
+
+# Outputs
 output "weather_url" {
-  description = "Weather Function HTTP URL"
-  value       = google_cloudfunctions_function.weather.https_trigger_url
+  value = google_cloudfunctions_function.weather.https_trigger_url
 }
 
 output "genai_url" {
-  description = "GenAI Function HTTP URL"
-  value       = google_cloudfunctions_function.genai.https_trigger_url
+  value = google_cloudfunctions_function.genai.https_trigger_url
 }
 
 output "crud_url" {
-  description = "CRUD Cloud Run URL"
-  value       = google_cloud_run_service.crud.status[0].url
-}
-
-output "frontend_url" {
-  description = "Frontend Cloud Run URL"
-  value       = google_cloud_run_service.frontend.status[0].url
+  value = google_cloud_run_service.crud.status[0].url
 }
 
 output "gateway_url" {
-  description = "API Gateway default hostname"
-  value       = google_api_gateway_gateway.gateway.default_hostname
+  value = "https://${google_api_gateway_gateway.gateway.default_hostname}"
 }
