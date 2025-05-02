@@ -1,6 +1,7 @@
 # COE558 Cloud Functions Endpoints
 
 ## Terraform
+### Cloud Build
 1. clone this repo to cloud shell
 2. initiate and apply terraform
 ```
@@ -12,6 +13,16 @@ Enter OPEN_API KEY ( hidden input )
 Enter Project ID 
 ```
 
+### Cloud Teardown
+```
+terraform destroy
+```
+if genapikey requested enter anyd data
+
+then afterwards delete left-out api 
+```
+gcloud api-gateway apis delete coe558-api   --project=PROJECT_ID
+```
 ---
 
 ## Weather Service
