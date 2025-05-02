@@ -79,13 +79,6 @@ resource "google_project_service" "crm" {
   project                    = var.project
 }
 
-resource "google_project_service" "cloud_run" {
-  service                    = "run.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
 # Build and push CRUD container image
 resource "null_resource" "build_crud_image" {
@@ -100,62 +93,12 @@ resource "null_resource" "build_crud_image" {
   ]
 }
 
-resource "google_project_service" "firestore" {
-  service                    = "firestore.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
-resource "google_project_service" "api_gateway" {
-  service                    = "apigateway.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
-resource "google_project_service" "servicemanagement" {
-  service                    = "servicemanagement.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
-resource "google_project_service" "servicecontrol" {
-  service                    = "servicecontrol.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
-resource "google_project_service" "endpoints" {
-  service                    = "endpoints.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
-resource "google_project_service" "cloudfunctions" {
-  service                    = "cloudfunctions.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
-}
 
-# Enable Artifact Registry API for Cloud Functions
-resource "google_project_service" "artifactregistry" {
-  service                    = "artifactregistry.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.cloudfunctions]
-}
 
 # Lookup current project number for service account binding
 data "google_project" "current" {
@@ -169,19 +112,28 @@ resource "google_project_iam_member" "artifact_registry_reader" {
   member  = "serviceAccount:service-${data.google_project.current.number}@gcf-admin-robot.iam.gserviceaccount.com"
 }
 
-resource "google_project_service" "storage" {
-  service                    = "storage.googleapis.com"
-  disable_dependent_services = true
-  disable_on_destroy         = true
-  project                    = var.project
-  depends_on                 = [google_project_service.crm]
+
+# Enable required APIs in bulk
+locals {
+  required_apis = [
+    "run.googleapis.com",
+    "apigateway.googleapis.com",
+    "servicemanagement.googleapis.com",
+    "servicecontrol.googleapis.com",
+    "endpoints.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "storage.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "artifactregistry.googleapis.com",
+  ]
 }
 
-resource "google_project_service" "cloudbuild" {
-  service                    = "cloudbuild.googleapis.com"
+resource "google_project_service" "enabled_apis" {
+  for_each = toset(local.required_apis)
+  service                    = each.key
+  project                    = var.project
   disable_dependent_services = true
   disable_on_destroy         = true
-  project                    = var.project
   depends_on                 = [google_project_service.crm]
 }
 

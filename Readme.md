@@ -2,28 +2,14 @@
 
 ## Terraform
 1. clone this repo to cloud shell
-2. In cloud shell enable these services 
+2. initiate and apply terraform
 ```
-gcloud services enable \
-  cloudresourcemanager.googleapis.com \
-  run.googleapis.com \
-  apigateway.googleapis.com \
-  servicemanagement.googleapis.com \
-  servicecontrol.googleapis.com \
-  endpoints.googleapis.com \
-  cloudfunctions.googleapis.com \
-  storage.googleapis.com \
-  cloudbuild.googleapis.com \
-  artifactregistry.googleapis.com \
-  --project=YOUR_PROJECT_ID
-```
-3. initiate and apply terraform
-```
-export TF_VAR_genai_api_key=sk-YOUROPENAPI_KEY
-
 cd terraform
 terraform init
 terraform apply
+
+Enter OPEN_API KEY ( hidden input )
+Enter Project ID 
 ```
 
 ---
