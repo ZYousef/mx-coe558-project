@@ -3,7 +3,9 @@
 ## Terraform
 ### Cloud Build
 1. clone this repo to cloud shell
-2. initiate and apply terraform
+2. gcloud services enable cloudresourcemanager.googleapis.com \
+  --project=PROJECT
+3. initiate and apply terraform
 ```
 cd terraform
 terraform init

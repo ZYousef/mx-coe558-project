@@ -107,6 +107,17 @@ paths:
         in: path
         required: true
         type: string
+    get:
+      summary: Get an item by ID
+      operationId: getItem
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      x-google-backend:
+        address: ${crud_backend_url}/items/{id}
+        protocol: h2
 
     put:
       summary: Update an item
