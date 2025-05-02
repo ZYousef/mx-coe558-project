@@ -328,48 +328,59 @@ output "gateway_url" {
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Frontend: Static site hosting in GCS
+# Build and deploy Frontend container to Cloud Run
 # ──────────────────────────────────────────────────────────────────────────────
 
-# Build and deploy the React frontend
-resource "null_resource" "deploy_frontend" {
+resource "null_resource" "build_frontend_image" {
   provisioner "local-exec" {
-    command = <<EOT
-cd ${path.module}/../frontend
-npm install
-npm run build
-gsutil -m rsync -r dist gs://${google_storage_bucket.frontend.name}
-EOT
+    command = "gcloud builds submit ${path.module}/../frontend --tag gcr.io/${var.project}/frontend:latest"
   }
   triggers = {
     always_run = timestamp()
   }
   depends_on = [
-    google_storage_bucket.frontend,
-    google_storage_bucket_iam_member.frontend_public
+    google_project_service.enabled_apis["cloudbuild.googleapis.com"]
   ]
 }
 
-# Storage bucket to host the frontend
-resource "google_storage_bucket" "frontend" {
-  name                        = "${var.project}-frontend"
-  location                    = var.region
-  uniform_bucket_level_access = true
+resource "google_cloud_run_service" "frontend" {
+  name     = "frontend"
+  location = var.region
 
-  website {
-    main_page_suffix = "index.html"
-    not_found_page   = "404.html"
+  depends_on = [
+    null_resource.build_frontend_image,
+    google_project_service.enabled_apis["run.googleapis.com"]
+  ]
+
+  template {
+    spec {
+      containers {
+        image = "gcr.io/${var.project}/frontend:latest"
+        env {
+          name  = "API_TARGET_URL"
+          value = "https://${google_api_gateway_gateway.gateway.default_hostname}"
+        }
+        env {
+          name  = "FRONTEND_URL"
+          value = google_cloud_run_service.frontend.status[0].url
+        }
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
   }
 }
 
-# Make frontend bucket publicly readable
-resource "google_storage_bucket_iam_member" "frontend_public" {
-  bucket = google_storage_bucket.frontend.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
+resource "google_cloud_run_service_iam_member" "frontend_invoker" {
+  service  = google_cloud_run_service.frontend.name
+  location = google_cloud_run_service.frontend.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }
 
-# Output the frontend URL
 output "frontend_url" {
-  value = "https://${google_storage_bucket.frontend.name}.storage.googleapis.com/index.html"
+  value = google_cloud_run_service.frontend.status[0].url
 }
