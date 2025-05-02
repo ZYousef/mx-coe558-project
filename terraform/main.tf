@@ -40,6 +40,7 @@ data "archive_file" "genai_zip" {
 
 variable "region" {
   description = "Region for all services"
+  type        = string
   default     = "us-central1"
 }
 
