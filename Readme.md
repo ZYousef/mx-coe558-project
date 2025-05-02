@@ -24,6 +24,7 @@ if genapikey requested enter anyd data
 then afterwards delete left-out api 
 ```
 gcloud api-gateway apis delete coe558-api   --project=PROJECT_ID
+gcloud services disable firestore.googleapis.com --project=PROJECT_ID
 ```
 ---
 
