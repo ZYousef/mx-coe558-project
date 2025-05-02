@@ -360,10 +360,6 @@ resource "google_cloud_run_service" "frontend" {
           name  = "API_TARGET_URL"
           value = "https://${google_api_gateway_gateway.gateway.default_hostname}"
         }
-        env {
-          name  = "FRONTEND_URL"
-          value = google_cloud_run_service.frontend.status[0].url
-        }
       }
     }
   }
