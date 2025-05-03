@@ -46,7 +46,11 @@ app.get('/items', async (req, res) => {
 
 // Read one by ID
 app.get('/items/:id', async (req, res) => {
-  const { id } = req.params;
+  // Handle literal "{id}" path from CORS preflight forward fallback
+  let id = req.params.id;
+  if (id === '{id}' && req.query.id) {
+    id = req.query.id;
+  }
   try {
     const doc = await collection.doc(id).get();
     if (!doc.exists) {
