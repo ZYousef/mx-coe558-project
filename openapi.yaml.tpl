@@ -20,17 +20,70 @@ paths:
       parameters:
         - name: lat
           in: query
-          required: true
+          required: false
           type: number
+          description: Latitude of the location (required if city is not provided)
         - name: lon
           in: query
-          required: true
+          required: false
           type: number
+          description: Longitude of the location (required if city is not provided)
+        - name: city
+          in: query
+          required: false
+          type: string
+          description: City name for weather lookup (alternative to lat/lon)
       responses:
         "200":
           description: OK
           schema:
             type: object
+            properties:
+              latitude:
+                type: number
+                description: Latitude of the location
+              longitude:
+                type: number
+                description: Longitude of the location
+              city:
+                type: string
+                description: City name (if provided in query)
+              temperature:
+                type: number
+                description: Current temperature in degrees Celsius
+              windspeed:
+                type: number
+                description: Wind speed in km/h
+              winddirection:
+                type: number
+                description: Wind direction in degrees
+              weathercode:
+                type: number
+                description: Weather condition code
+        "400":
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
+        "404":
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
+        "500":
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
       x-google-backend:
         address: ${weather_backend_url}
         protocol: h2

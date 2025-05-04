@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://coe558-gateway-42vndeds.uc.gateway.dev',
+        target: 'https://coe558-gateway-9ssaf52u.uc.gateway.dev',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         logLevel: 'debug',
