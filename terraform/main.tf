@@ -111,7 +111,7 @@ resource "null_resource" "build_crud_image" {
 resource "google_project_iam_member" "artifact_registry_reader" {
   project = var.project
   role    = "roles/artifactregistry.reader"
-  member  = "serviceAccount:service-${data.external.project_info.result["projectNumber"]}@gcf-admin-robot.iam.gserviceaccount.com"
+  member  = "serviceAccount:${data.external.project_info.result["projectNumber"]}-compute@developer.gserviceaccount.com"
 }
 
 
