@@ -16,7 +16,7 @@ const app = express();
 
 // --- Configuration ---
 const PORT = process.env.PORT || 3000; // Port for this proxy server to run on
-const API_TARGET_URL = process.env.API_TARGET_URL || 'https://coe558-gateway-42vndeds.uc.gateway.dev';
+const API_TARGET_URL = process.env.API_TARGET_URL || 'https://coe558-gateway-9ssaf52u.uc.gateway.dev';
 const STATIC_FILES_PATH = path.join(__dirname, 'dist');
 // --- Middleware ---
 

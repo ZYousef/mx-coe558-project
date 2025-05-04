@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { API } from '../config';
 import {
   WiDaySunny,
   WiDayCloudy,
@@ -56,24 +55,26 @@ export default function Weather() {
     try {
       let url;
       if (city) {
-        url = `${API}/weather?city=${encodeURIComponent(city)}`;
+        url = `/api/weather?city=${encodeURIComponent(city)}`;
       } else if (lat && lon) {
-        url = `${API}/weather?lat=${lat}&lon=${lon}`;
+        url = `/api/weather?lat=${lat}&lon=${lon}`;
       } else {
         throw new Error('No valid location data');
       }
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
       if (!res.ok) {
-        if (res.status === 404) throw new Error('City not found');
-        throw new Error(res.statusText);
+        throw new Error(`HTTP error! Status: ${res.status}`);
       }
       const data = await res.json();
       setWeather(data);
-      setCurrentCity(data.city); // Use API-provided city name
-    } catch (e) {
-      console.error(e);
-      setError(e.message || 'Failed to load weather');
+      setCurrentCity(data.city);
+    } catch (err) {
+      console.error('Failed to fetch weather:', err);
+      setError('Failed to load weather.');
     } finally {
       setLoading(false);
     }
