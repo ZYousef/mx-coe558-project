@@ -1,12 +1,14 @@
-// index.js
-// require('dotenv').config();                // only if you’re using a .env locally
 const functions = require('@google-cloud/functions-framework');
 const cors = require('cors')({ origin: true });
 const axios = require('axios');
 
-// Build Open-Meteo API URL (no API key needed)
-const api_url = (lat, lon) =>
+// Build API URLs
+const weather_api_url = (lat, lon) =>
   `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+const geocode_api_url = (city) =>
+  `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`;
+const reverse_geocode_api_url = (lat, lon) =>
+  `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
 
 functions.http('weather', (req, res) => {
   // Handle CORS preflight
@@ -24,19 +26,47 @@ functions.http('weather', (req, res) => {
       return res.status(405).send('Only GET allowed');
     }
 
-    const { lat, lon } = req.query;
-    if (!lat || !lon) {
+    const { lat, lon, city } = req.query;
+
+    // Check if either city or (lat, lon) is provided
+    if (!city && (!lat || !lon)) {
       res.set('Access-Control-Allow-Origin', '*');
-      return res.status(400).send('Please specify both lat and lon query parameters');
+      return res.status(400).send('Please specify either a city or both lat and lon query parameters');
     }
 
+    let latitude, longitude, cityName;
+
     try {
-      const resp = await axios.get(api_url(lat, lon));
-      const { temperature, windspeed, winddirection, weathercode } = resp.data.current_weather;
+      // If city is provided, geocode it to get lat/lon
+      if (city) {
+        const geocodeResp = await axios.get(geocode_api_url(city));
+        const results = geocodeResp.data.results;
+        if (!results || results.length === 0) {
+          res.set('Access-Control-Allow-Origin', '*');
+          return res.status(404).send('City not found');
+        }
+        latitude = results[0].latitude;
+        longitude = results[0].longitude;
+        cityName = city;
+      } else {
+        // Use provided lat/lon
+        latitude = lat;
+        longitude = lon;
+
+        // Fetch city name using BigDataCloud Reverse Geocoding API
+        const reverseGeocodeResp = await axios.get(reverse_geocode_api_url(latitude, longitude));
+        cityName = reverseGeocodeResp.data.city || reverseGeocodeResp.data.locality || 'Unknown City';
+      }
+
+      // Fetch weather data
+      const weatherResp = await axios.get(weather_api_url(latitude, longitude));
+      const { temperature, windspeed, winddirection, weathercode } = weatherResp.data.current_weather;
+
       res.set('Access-Control-Allow-Origin', '*');
       return res.status(200).json({
-        latitude: lat,
-        longitude: lon,
+        latitude,
+        longitude,
+        city: cityName,
         temperature,
         windspeed,
         winddirection,
@@ -45,7 +75,7 @@ functions.http('weather', (req, res) => {
     } catch (err) {
       console.error(err);
       res.set('Access-Control-Allow-Origin', '*');
-      return res.status(500).send('Error fetching weather');
+      return res.status(500).send('Error fetching data');
     }
   });
 });
