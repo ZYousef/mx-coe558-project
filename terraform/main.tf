@@ -140,6 +140,19 @@ resource "google_project_service" "enabled_apis" {
   depends_on                 = [google_project_service.crm]
 }
 
+# Create Firestore native-mode database
+resource "google_firestore_database" "default" {
+  provider    = google-beta
+  project     = var.project
+  name        = "(default)"
+  location_id = var.region
+  type        = "FIRESTORE_NATIVE"
+
+  depends_on = [
+    google_project_service.enabled_apis["firestore.googleapis.com"]
+  ]
+}
+
 # Cloud Run: CRUD Service
 resource "google_cloud_run_service" "crud" {
   name     = "crud-service"
