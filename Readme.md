@@ -27,6 +27,21 @@ gcloud api-gateway apis delete coe558-api   --project=PROJECT_ID
 gcloud services disable firestore.googleapis.com --project=PROJECT_ID
 ```
 ---
+## Working Demo
+Frontend
+https://frontend-767937937782.us-central1.run.app/
+
+API Gateway
+https://coe558-gateway-9ssaf52u.uc.gateway.dev
+
+CRUD Service
+https://crud-service-767937937782.us-central1.run.app
+
+Weather API
+https://us-central1-edge-1000.cloudfunctions.net/weather
+
+GenAI API
+https://us-central1-edge-1000.cloudfunctions.net/genai
 
 ## Weather Service
 
