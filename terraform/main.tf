@@ -249,7 +249,7 @@ resource "google_cloudfunctions_function_iam_member" "weather_invoker" {
 
 # Cloud Functions: GenAI
 resource "google_cloudfunctions_function" "genai" {
-  name                  = "genai"
+  name                  = "generate"
   project               = var.project
   region                = var.region
   runtime               = "nodejs18"
