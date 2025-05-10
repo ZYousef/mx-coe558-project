@@ -2,16 +2,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Firestore } = require('@google-cloud/firestore');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
 
 const app = express();
 
 // Global CORS & preflight
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header(
-    'Access-Control-Allow-Methods',
-    'GET,POST,PUT,DELETE,OPTIONS'
-  );
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
@@ -25,6 +24,66 @@ app.use(bodyParser.json());
 const db = new Firestore();
 const collection = db.collection('genaiHistory');
 
+// GraphQL schema
+const schema = buildSchema(`
+  type Item {
+    id: String
+    prompt: String
+    resultUrl: String
+    timestamp: Float
+  }
+
+  type Query {
+    getItems: [Item]
+    getItem(id: String!): Item
+  }
+
+  type Mutation {
+    createItem(prompt: String!, resultUrl: String!): Item
+    updateItem(id: String!, prompt: String!, resultUrl: String!): Item
+    deleteItem(id: String!): Boolean
+  }
+`);
+
+// GraphQL resolvers
+const root = {
+  getItems: async () => {
+    const snapshot = await collection.orderBy('timestamp', 'desc').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  },
+  getItem: async ({ id }) => {
+    const doc = await collection.doc(id).get();
+    if (!doc.exists) {
+      throw new Error('Item not found');
+    }
+    return { id: doc.id, ...doc.data() };
+  },
+  createItem: async ({ prompt, resultUrl }) => {
+    const doc = await collection.add({ prompt, resultUrl, timestamp: Date.now() });
+    return { id: doc.id, prompt, resultUrl, timestamp: Date.now() };
+  },
+  updateItem: async ({ id, prompt, resultUrl }) => {
+    await collection.doc(id).update({ prompt, resultUrl, timestamp: Date.now() });
+    const updatedDoc = await collection.doc(id).get();
+    return { id: updatedDoc.id, ...updatedDoc.data() };
+  },
+  deleteItem: async ({ id }) => {
+    await collection.doc(id).delete();
+    return true;
+  },
+};
+
+// GraphQL endpoint
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema,
+    rootValue: root,
+    graphiql: true, // Enable GraphiQL for testing
+  })
+);
+
+// REST endpoints
 app.get('/healthz', (req, res) => res.send('OK'));
 
 // Create item
