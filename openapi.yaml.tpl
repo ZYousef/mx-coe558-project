@@ -210,3 +210,13 @@ paths:
       x-google-backend:
         address: ${crud_backend_url}/items/{id}
         protocol: h2
+
+  /graphql:
+    post:
+      summary: GraphQL endpoint for CRUD service
+      operationId: graphqlCrud
+      x-google-backend:
+        address: ${crud_backend_url}/graphql
+      responses:
+        '200':
+          description: A successful response
