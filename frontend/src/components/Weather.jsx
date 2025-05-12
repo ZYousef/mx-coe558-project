@@ -55,7 +55,7 @@ export default function Weather() {
       let data;
 
       if (USE_GRAPHQL) {
-        // GraphQL API request
+        console.log("Fetching weather data through GraphQL...");
         const query = city
           ? `query ($city: String!) { getWeather(city: $city) { city temperature weathercode windspeed winddirection } }`
           : `query ($lat: Float!, $lon: Float!) { getWeather(lat: $lat, lon: $lon) { city temperature weathercode windspeed winddirection } }`;
@@ -64,28 +64,40 @@ export default function Weather() {
           ? { city }
           : { lat: parseFloat(lat), lon: parseFloat(lon) };
 
-        const res = await fetch(`${API}/graphql`, {
+        console.log("GraphQL Query:", query);
+        console.log("GraphQL Variables:", variables);
+
+        const res = await fetch(`${API}/weather`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query, variables }),
         });
 
+        console.log("GraphQL Response Status:", res.status);
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
         const json = await res.json();
+        console.log("GraphQL Response JSON:", json);
         data = json.data.getWeather;
       } else {
-        // REST API request
+        console.log("Fetching weather data through REST...");
         const url = city
           ? `${API}/weather?city=${encodeURIComponent(city)}`
           : `${API}/weather?lat=${lat}&lon=${lon}`;
+        console.log("REST URL:", url);
+
         const res = await fetch(url);
+        console.log("REST Response Status:", res.status);
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
         data = await res.json();
+        console.log("REST Response JSON:", data);
       }
 
       setWeather(data);
       setCurrentCity(data.city);
     } catch (err) {
+      console.error("Error fetching weather:", err);
       setError("Failed to load weather.");
     } finally {
       setLoading(false);
