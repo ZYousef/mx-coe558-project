@@ -67,7 +67,7 @@ export default function Weather() {
         console.log("GraphQL Query:", query);
         console.log("GraphQL Variables:", variables);
 
-        const res = await fetch(`${API}/weather`, {
+        const res = await fetch(`/api/weather`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query, variables }),
@@ -82,8 +82,8 @@ export default function Weather() {
       } else {
         console.log("Fetching weather data through REST...");
         const url = city
-          ? `${API}/weather?city=${encodeURIComponent(city)}`
-          : `${API}/weather?lat=${lat}&lon=${lon}`;
+          ? `/api/weather?city=${encodeURIComponent(city)}`
+          : `/api/weather?lat=${lat}&lon=${lon}`;
         console.log("REST URL:", url);
 
         const res = await fetch(url);
