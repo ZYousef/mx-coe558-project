@@ -1,6 +1,7 @@
-/* Enhanced GenAI Component */
+/* Enhanced GenAI Component with REST and GraphQL Support */
 
 import React, { useState } from "react";
+import { USE_GRAPHQL } from "../config"; // Import the configuration
 
 export default function GenAI({ onSave }) {
   const [prompt, setPrompt] = useState("");
@@ -16,13 +17,33 @@ export default function GenAI({ onSave }) {
     setResult(null);
     setSaved(false);
     try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      });
+      let res;
+      if (USE_GRAPHQL) {
+        console.log("Using GraphQL for Generate");
+        const query = `
+          query ($prompt: String!) {
+            generateImage(prompt: $prompt)
+          }
+        `;
+        const variables = { prompt };
+
+        res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, variables }),
+        });
+      } else {
+        console.log("Using REST for Generate");
+        res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt }),
+        });
+      }
+
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-      const { result: url } = await res.json();
+      const data = await res.json();
+      const url = USE_GRAPHQL ? data.data.generateImage : data.result;
       setResult(url);
     } catch (err) {
       setError("Failed to generate image.");
@@ -34,14 +55,41 @@ export default function GenAI({ onSave }) {
   const handleSave = async () => {
     if (!result) return;
     try {
-      const res = await fetch("/api/items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, resultUrl: result }),
-      });
+      let res;
+      if (USE_GRAPHQL) {
+        console.log("Using GraphQL for Save");
+        const query = `
+          mutation ($prompt: String!, $resultUrl: String!) {
+            createItem(prompt: $prompt, resultUrl: $resultUrl) {
+              id
+              prompt
+              resultUrl
+              timestamp
+            }
+          }
+        `;
+        const variables = { prompt, resultUrl: result };
+
+        res = await fetch("/api/graphql", { 
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, variables }),
+        });
+      } else {
+        console.log("Using REST for Save");
+        res = await fetch("/api/items", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, resultUrl: result }),
+        });
+      }
+
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-      setSaved(true);
-      onSave();
+      const data = await res.json();
+      if (USE_GRAPHQL ? data.data.createItem : true) {
+        setSaved(true);
+        onSave();
+      }
     } catch (err) {
       setError("Failed to save.");
     }
