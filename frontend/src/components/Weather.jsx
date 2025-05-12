@@ -9,6 +9,7 @@ import {
   WiThunderstorm,
   WiSnow,
 } from "react-icons/wi";
+import { API, USE_GRAPHQL } from "../config";
 
 const CODE_MAP = {
   0: { label: "Clear sky", icon: WiDaySunny },
@@ -51,12 +52,37 @@ export default function Weather() {
   const fetchWeather = async (city = "", lat = null, lon = null) => {
     setLoading(true);
     try {
-      let url = city
-        ? `/api/weather?city=${encodeURIComponent(city)}`
-        : `/api/weather?lat=${lat}&lon=${lon}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-      const data = await res.json();
+      let data;
+
+      if (USE_GRAPHQL) {
+        // GraphQL API request
+        const query = city
+          ? `query ($city: String!) { getWeather(city: $city) { city temperature weathercode windspeed winddirection } }`
+          : `query ($lat: Float!, $lon: Float!) { getWeather(lat: $lat, lon: $lon) { city temperature weathercode windspeed winddirection } }`;
+
+        const variables = city
+          ? { city }
+          : { lat: parseFloat(lat), lon: parseFloat(lon) };
+
+        const res = await fetch(`${API}/graphql`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, variables }),
+        });
+
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        const json = await res.json();
+        data = json.data.getWeather;
+      } else {
+        // REST API request
+        const url = city
+          ? `${API}/weather?city=${encodeURIComponent(city)}`
+          : `${API}/weather?lat=${lat}&lon=${lon}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        data = await res.json();
+      }
+
       setWeather(data);
       setCurrentCity(data.city);
     } catch (err) {

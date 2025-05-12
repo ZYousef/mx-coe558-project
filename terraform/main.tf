@@ -373,6 +373,10 @@ resource "google_cloud_run_service" "frontend" {
           name  = "API_TARGET_URL"
           value = "https://${google_api_gateway_gateway.gateway.default_hostname}"
         }
+        env {
+          name  = "VITE_USE_GRAPHQL"
+          value = "true" # Set to "false" if you want to use REST
+        }
       }
     }
   }
