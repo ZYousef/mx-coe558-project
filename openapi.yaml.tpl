@@ -15,7 +15,7 @@ x-google-endpoints:
 paths:
   /weather:
     get:
-      summary: Current weather
+      summary: Current weather (REST)
       operationId: getWeather
       parameters:
         - name: lat
@@ -38,7 +38,7 @@ paths:
           description: OK
           schema:
             type: object
-            properties:
+properties:
               latitude:
                 type: number
                 description: Latitude of the location
@@ -86,6 +86,51 @@ paths:
                 description: Error message
       x-google-backend:
         address: ${weather_backend_url}
+        protocol: h2
+
+    post:
+      summary: Current weather (GraphQL)
+      operationId: getWeatherGraphQL
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              query:
+                type: string
+                description: GraphQL query string
+              variables:
+                type: object
+                description: GraphQL variables
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
+        "500":
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
+      x-google-backend:
+        address: ${weather_backend_url}/graphql
         protocol: h2
 
   /generate:
