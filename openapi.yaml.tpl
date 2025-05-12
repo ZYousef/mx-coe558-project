@@ -38,7 +38,7 @@ paths:
           description: OK
           schema:
             type: object
-properties:
+            properties:
               latitude:
                 type: number
                 description: Latitude of the location
