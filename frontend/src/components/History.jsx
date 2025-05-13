@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
+import { USE_GRAPHQL } from "../config";
 
 export default function History({ refreshFlag }) {
   const [items, setItems] = useState([]);
@@ -8,9 +9,32 @@ export default function History({ refreshFlag }) {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/items");
-      const data = await res.json();
-      setItems(data);
+      let data;
+      if (USE_GRAPHQL) {
+        console.log("Fetching items using GraphQL...");
+        const query = `
+          query {
+            getItems {
+              id
+              prompt
+              resultUrl
+              timestamp
+            }
+          }
+        `;
+        const res = await fetch("/api/graphql", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
+        });
+        const json = await res.json();
+        data = json.data.getItems;
+      } else {
+        console.log("Fetching items using REST...");
+        const res = await fetch("/api/items");
+        data = await res.json();
+      }
+      setItems(data || []);
     } catch (err) {
       console.error("Failed to fetch history:", err);
     } finally {
@@ -22,8 +46,34 @@ export default function History({ refreshFlag }) {
     debounce(async (id) => {
       if (!window.confirm("Delete this item?")) return;
       try {
-        const res = await fetch(`/api/items/${id}`, { method: "DELETE" });
-        if (res.ok) setItems((prev) => prev.filter((item) => item.id !== id));
+        if (USE_GRAPHQL) {
+          console.log("Deleting item using GraphQL...");
+          const mutation = `
+            mutation ($id: ID!) {
+              deleteItem(id: $id) {
+                success
+              }
+            }
+          `;
+          const variables = { id };
+          const res = await fetch("/api/graphql", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: mutation, variables }),
+          });
+          const json = await res.json();
+          if (json.data.deleteItem.success) {
+            setItems((prev) => prev.filter((item) => item.id !== id));
+          }
+        } else {
+          console.log("Deleting item using REST...");
+          const res = await fetch(`/api/items/${id}`, {
+            method: "DELETE",
+          });
+          if (res.ok) {
+            setItems((prev) => prev.filter((item) => item.id !== id));
+          }
+        }
       } catch (err) {
         console.error("Delete failed:", err);
       }
