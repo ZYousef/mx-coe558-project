@@ -27,6 +27,9 @@ gcloud api-gateway apis delete coe558-api   --project=PROJECT_ID
 gcloud services disable firestore.googleapis.com --project=PROJECT_ID
 ```
 ---
+## GraphAL
+The system support both Rest and GraphQL APIs, the backend accept and handle both of them and the frontend can be switched between them using USE_GRAPHQL variable in frontend/config.js
+---
 ## Working Demo
 Frontend
 https://frontend-767937937782.us-central1.run.app/
