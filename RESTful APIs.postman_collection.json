@@ -1,0 +1,721 @@
+{
+	"info": {
+		"_postman_id": "e611716e-49e7-442a-b474-2cd29eb7eb25",
+		"name": "RESTful APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5194782",
+		"_collection_link": "https://www.postman.com/mx-project/mx-coe558-project/collection/ryhuuz9/restful-apis?action=share&source=collection_link&creator=5194782"
+	},
+	"item": [
+		{
+			"name": "CRUD",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"prompt\": \"a cat in a hat\",\n  \"resultUrl\": \"https://img.example.com/cat.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"items"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"prompt\": \"a cat in a hat\",\n  \"resultUrl\": \"https://img.example.com/cat.png\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"items"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"1d-mNAydPIQ9tWKo9LHajg7ufNv3Bs\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "3174c51d75b6a61eeaf8c7f52dd5b9cf;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:38:51 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "29"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"Fe1WctUUgzPTHM4m7NjL\"\n}"
+						}
+					]
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"items"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "read",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"items"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"10d-9QcjjKcZ7mYcy02xhHhLciKD8h8\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "743b53d5d189b639f2ae4a2fec06d1f6"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:30:58 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "269"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"1ieRT8NbgiZB8vIJvQTM\",\n        \"resultUrl\": \"https://img.example.com/cat.png\",\n        \"prompt\": \"a hhgjh cat in a hattttttt\",\n        \"timestamp\": 1747607453804\n    },\n    {\n        \"id\": \"Wp5eTzjSICR9HSzyTfxg\",\n        \"prompt\": \"a cat in a hat\",\n        \"resultUrl\": \"https://img.example.com/cat.png\",\n        \"timestamp\": 1747156709317\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"prompt\": \"a hhgjh cat in a hattttttt\",\n  \"resultUrl\": \"https://img.example.com/cat.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items/1ieRT8NbgiZB8vIJvQTM",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"items",
+								"1ieRT8NbgiZB8vIJvQTM"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"prompt\": \"a hhgjh cat in a hattttttt\",\n  \"resultUrl\": \"https://img.example.com/cat.png\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items/1ieRT8NbgiZB8vIJvQTM",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"items",
+										"1ieRT8NbgiZB8vIJvQTM"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"10-oV4hJxRVSENxc/wX8+mA4/Pe4tA\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "635e3e505dae5ad9169d921e1b25ed89;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:30:53 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "16"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items/1ieRT8NbgiZB8vIJvQTM",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"items",
+								"1ieRT8NbgiZB8vIJvQTM"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/items/1ieRT8NbgiZB8vIJvQTM",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"items",
+										"1ieRT8NbgiZB8vIJvQTM"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "html",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"a-bAsFyilMr4Ra1hIU5PyoyFRunpI\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "3c085c3c6a8683d6c7b4e9ffdaeca1ed;o=1"
+								},
+								{
+									"key": "content-type",
+									"value": "text/html"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:40:17 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "External APIs",
+			"item": [
+				{
+					"name": "weather",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/weather?city=Jeddah",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Jeddah"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "weather",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/weather?city=Jeddah",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"weather"
+									],
+									"query": [
+										{
+											"key": "city",
+											"value": "Jeddah"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "function-execution-id",
+									"value": "g8fcufelk1uf"
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "8d01da5dc04f94de2bc5c3ae48a74eb4;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:40:54 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "128"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"latitude\": 21.49012,\n    \"longitude\": 39.18624,\n    \"city\": \"Jeddah\",\n    \"temperature\": 27.9,\n    \"windspeed\": 3.3,\n    \"winddirection\": 41,\n    \"weathercode\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "generate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"prompt\": \"an astronaut riding a horse\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/generate",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"generate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "generate",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"prompt\": \"an astronaut riding a horse\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/generate",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"generate"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "function-execution-id",
+									"value": "ocvbiv94nl11"
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "841856d23e9bfb4ca2c83bb02432656c;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:40:45 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "485"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"result\": \"https://oaidalleapiprodscus.blob.core.windows.net/private/org-7bmoLkieBRAsH2qgofpJKr6I/user-uUQLiwWvyHj6G8HimSHwv0qb/img-lHGLyeZrV8wMaDamesstRWML.png?st=2025-05-18T21%3A40%3A45Z&se=2025-05-18T23%3A40%3A45Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=cc612491-d948-4d2e-9821-2683df3719f5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-18T21%3A16%3A42Z&ske=2025-05-19T21%3A16%3A42Z&sks=b&skv=2024-08-04&sig=KW1PDD5dkELGTvGsRIm07zPeBfj3kWKZWMUFnZshke8%3D\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

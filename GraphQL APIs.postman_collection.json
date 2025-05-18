@@ -1,0 +1,769 @@
+{
+	"info": {
+		"_postman_id": "eaf2ca4d-b933-4dfb-8bb7-2624fce98141",
+		"name": "GraphQL APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5194782",
+		"_collection_link": "https://www.postman.com/mx-project/mx-coe558-project/collection/ix491cp/graphql-apis?action=share&source=collection_link&creator=5194782"
+	},
+	"item": [
+		{
+			"name": "External APIs",
+			"item": [
+				{
+					"name": "weather",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"query ($lat: Float!, $lon: Float!) { getWeather(lat: $lat, lon: $lon) { latitude longitude city temperature windspeed winddirection weathercode } }\",\r\n  \"variables\": {\r\n    \"lat\": 24.73956,\r\n    \"lon\": 46.784003\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/weather",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"weather"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "weather",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query ($lat: Float!, $lon: Float!) { getWeather(lat: $lat, lon: $lon) { latitude longitude city temperature windspeed winddirection weathercode } }\",\r\n  \"variables\": {\r\n    \"lat\": 24.73956,\r\n    \"lon\": 46.784003\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/weather",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"weather"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "function-execution-id",
+									"value": "g8fcsjqxrdq0"
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "e1061ee201a43b32baf96a4bbc2af947;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:41:22 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "154"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"getWeather\": {\n            \"latitude\": 24.73956,\n            \"longitude\": 46.784003,\n            \"city\": \"Riyadh\",\n            \"temperature\": 24.6,\n            \"windspeed\": 4.7,\n            \"winddirection\": 328,\n            \"weathercode\": 0\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "generate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"query ($prompt: String!) { generateImage(prompt: $prompt) }\",\r\n  \"variables\": {\r\n    \"prompt\": \"A futuristic cityscape at sunset\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/generate",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"generate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "generate",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query ($prompt: String!) { generateImage(prompt: $prompt) }\",\r\n  \"variables\": {\r\n    \"prompt\": \"A futuristic cityscape at sunset\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/generate",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"generate"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "function-execution-id",
+									"value": "ocvbze1bh5yc"
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "585581de1746e83d6eaeea1ddff7f6de;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:41:39 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "501"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"generateImage\": \"https://oaidalleapiprodscus.blob.core.windows.net/private/org-7bmoLkieBRAsH2qgofpJKr6I/user-uUQLiwWvyHj6G8HimSHwv0qb/img-G9zRBroVzyRVieTx13JX0hcQ.png?st=2025-05-18T21%3A41%3A39Z&se=2025-05-18T23%3A41%3A39Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=cc612491-d948-4d2e-9821-2683df3719f5&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-18T20%3A42%3A45Z&ske=2025-05-19T20%3A42%3A45Z&sks=b&skv=2024-08-04&sig=eBf/PDjYosXt6Cu6EFVUpvhO2TaocteaSgGqFVH8BYM%3D\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "CRUD",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"mutation ($prompt: String!, $resultUrl: String!) { createItem(prompt: $prompt, resultUrl: $resultUrl) { id prompt resultUrl timestamp } }\",\r\n  \"variables\": {\r\n    \"prompt\": \"a cat in a hat\",\r\n    \"resultUrl\": \"https://img.example.com/cat.png\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/graphql",
+							"protocol": "https",
+							"host": [
+								"frontend-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"api",
+								"graphql"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation ($prompt: String!, $resultUrl: String!) { createItem(prompt: $prompt, resultUrl: $resultUrl) { id prompt resultUrl timestamp } }\",\r\n  \"variables\": {\r\n    \"prompt\": \"a cat in a hat\",\r\n    \"resultUrl\": \"https://img.example.com/cat.png\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://frontend-pgqmmdieqq-uc.a.run.app/api/graphql",
+									"protocol": "https",
+									"host": [
+										"frontend-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"api",
+										"graphql"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"97-aaBseKYPAbYpWEKRPlHw11z3Gb8\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "ae9f1d49c44b694c4e9d40331cb33c04;o=1"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000, h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:39:35 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "151"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"createItem\": {\n            \"id\": \"YqPY1RVXDLsrlvN4TV4D\",\n            \"prompt\": \"a cat in a hat\",\n            \"resultUrl\": \"https://img.example.com/cat.png\",\n            \"timestamp\": 1747607975741\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"query { getItems { id prompt resultUrl timestamp } }\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://crud-service-pgqmmdieqq-uc.a.run.app/graphql",
+							"protocol": "https",
+							"host": [
+								"crud-service-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "read",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"query { getItems { id prompt resultUrl timestamp } }\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://crud-service-pgqmmdieqq-uc.a.run.app/graphql",
+									"protocol": "https",
+									"host": [
+										"crud-service-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"197-WjwHLzUcYo1IF+bQMmBQJ3eKHz4\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "02d5a88f35e303e9d8b3c21b49443a59;o=1"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:42:08 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "407"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"getItems\": [\n            {\n                \"id\": \"YqPY1RVXDLsrlvN4TV4D\",\n                \"prompt\": \"a cat in a hat\",\n                \"resultUrl\": \"https://img.example.com/cat.png\",\n                \"timestamp\": 1747607975707\n            },\n            {\n                \"id\": \"Fe1WctUUgzPTHM4m7NjL\",\n                \"prompt\": \"a cat in a hat\",\n                \"resultUrl\": \"https://img.example.com/cat.png\",\n                \"timestamp\": 1747607931522\n            },\n            {\n                \"id\": \"Wp5eTzjSICR9HSzyTfxg\",\n                \"prompt\": \"a cat in a hat\",\n                \"resultUrl\": \"https://img.example.com/cat.png\",\n                \"timestamp\": 1747156709317\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"mutation ($id: String!, $prompt: String!, $resultUrl: String!) { updateItem(id: $id, prompt: $prompt, resultUrl: $resultUrl) { id prompt resultUrl timestamp } }\",\r\n  \"variables\": {\r\n    \"id\": \"YqPY1RVXDLsrlvN4TV4D\",\r\n    \"prompt\": \"Updated prompt:nothing new\",\r\n    \"resultUrl\": \"https://example.com/updated-image.jpg\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://crud-service-pgqmmdieqq-uc.a.run.app/graphql",
+							"protocol": "https",
+							"host": [
+								"crud-service-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "update",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation ($id: String!, $prompt: String!, $resultUrl: String!) { updateItem(id: $id, prompt: $prompt, resultUrl: $resultUrl) { id prompt resultUrl timestamp } }\",\r\n  \"variables\": {\r\n    \"id\": \"YqPY1RVXDLsrlvN4TV4D\",\r\n    \"prompt\": \"Updated prompt:nothing new\",\r\n    \"resultUrl\": \"https://example.com/updated-image.jpg\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://crud-service-pgqmmdieqq-uc.a.run.app/graphql",
+									"protocol": "https",
+									"host": [
+										"crud-service-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"a9-QrKur0HBIIFG5CyCibAzNLl1chI\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "24de1ac9ec1f1c5eba60e9d7418213fc;o=1"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:42:22 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "169"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"updateItem\": {\n            \"id\": \"YqPY1RVXDLsrlvN4TV4D\",\n            \"prompt\": \"Updated prompt:nothing new\",\n            \"resultUrl\": \"https://example.com/updated-image.jpg\",\n            \"timestamp\": 1747608142860\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"query\": \"mutation ($id: String!) { deleteItem(id: $id) }\",\r\n  \"variables\": {\r\n    \"id\": \"YqPY1RVXDLsrlvN4TV4D\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://crud-service-pgqmmdieqq-uc.a.run.app/graphql",
+							"protocol": "https",
+							"host": [
+								"crud-service-pgqmmdieqq-uc",
+								"a",
+								"run",
+								"app"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "delete",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"query\": \"mutation ($id: String!) { deleteItem(id: $id) }\",\r\n  \"variables\": {\r\n    \"id\": \"YqPY1RVXDLsrlvN4TV4D\"\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://crud-service-pgqmmdieqq-uc.a.run.app/graphql",
+									"protocol": "https",
+									"host": [
+										"crud-service-pgqmmdieqq-uc",
+										"a",
+										"run",
+										"app"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-allow-methods",
+									"value": "GET,POST,PUT,DELETE,OPTIONS"
+								},
+								{
+									"key": "access-control-allow-headers",
+									"value": "Content-Type"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"1c-mGnLIRJGEtWMOUdwNk/JRvHCRAY\""
+								},
+								{
+									"key": "x-cloud-trace-context",
+									"value": "0a598d4091462a947e52b0a389fdb136;o=1"
+								},
+								{
+									"key": "date",
+									"value": "Sun, 18 May 2025 22:42:46 GMT"
+								},
+								{
+									"key": "server",
+									"value": "Google Frontend"
+								},
+								{
+									"key": "Content-Length",
+									"value": "28"
+								},
+								{
+									"key": "Alt-Svc",
+									"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"deleteItem\": true\n    }\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
